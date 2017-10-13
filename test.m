@@ -5,7 +5,7 @@ global resR resThetaPhi rdim thetadim phidim nr ntheta nphi dr dtheta dphi ...
     perr vGoal vObst vMove vInitial
 % - minimum grid resolution for XY
 resR = 1.0;
-resThetaPhi = 30.0;
+resThetaPhi = 90.0;
 % - dimensions of the world
 rdim = [0.0 10.0];
 thetadim = [-180.0 180.0];
@@ -61,19 +61,16 @@ for i=1:nr
 end
 
 % DO VALUE ITERATION
-uchange(1)=0;
-Jsto=reshape(J,[],1);
 T=10;
 for t=2:T
     % Uncomment one of these things to slow the display down.
-%     pause;
-     pause(0.1);
-    drawnow;
+    % pause;
+    % pause(0.1);
+    % drawnow;
     
     % Iterate over all states.
     Jprev = J;
     Uprev = U;
-    uchange(t)=0;
     for i=1:nr
         for j=1:ntheta
             for k=1:nphi
@@ -227,26 +224,15 @@ for t=2:T
                     [J(i,j,k),U(i,j,k)] = max([JStay JRPos JRNeg...
                         JThetaPos JThetaNeg JPhiPos JPhiNeg]);
 
-                    % See if the policy changed (for display purposes only).
-                    if (U(i,j,k)~=Uprev(i,j,k))
-                        uchange(t) = uchange(t)+1;
-                    end
+                    
                 end
             end
         end
     end
+    
 end
             
-       
-    % Record the values (for display purposes only).
-    Jsto=[Jsto reshape(J,[],1)];
     
-    % Update the display.
-    updatefigure(Hcolor,Hcost,Haction,J,U,Uprev,t);
-
-
-% DISPLAY THE RESULTS (HOW THE VALUES/POLICY CHANGE AT EACH ITERATION)
-displayresults(T,Jsto,uchange);
 
 
 
