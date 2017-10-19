@@ -5,22 +5,22 @@ global resR resThetaPhi rdim thetadim phidim nr ntheta nphi dr dtheta dphi ...
     perr vGoal vObst vMove vInitial gamma
 % - minimum grid resolution for XY
 resR = 1.0;
-resThetaPhi = 90.0;
+resThetaPhi = 10.0;
 % - dimensions of the world
 rdim = [0.0 10.0];
-thetadim = [-180.0 180.0];
-phidim = [-180.0 180.0];
+thetadim = [0.0 360.0];
+phidim = [0.0 360.0];
+% - vectors of each variable
+rVec=rdim(1):resR:rdim(2);
+thetaVec=thetadim(1):resThetaPhi:thetadim(2);
+phiVec=phidim(1):resThetaPhi:phidim(2);
 % - number of grid cells
-nr=ceil((rdim(2)-rdim(1))/resR);
-ntheta=ceil((thetadim(2)-thetadim(1))/resThetaPhi);
-nphi=ceil((phidim(2)-phidim(1))/resThetaPhi);
-% - size of grid cells
-dr = (rdim(2)-rdim(1))/nr;
-dtheta = (thetadim(2)-thetadim(1))/ntheta;
-dphi = (phidim(2)-phidim(1))/nphi;
+nr=length(rVec);
+ntheta=length(thetaVec);
+nphi=length(phiVec);
 % - probability of going the wrong way
-perr = 0.1;
-% - attenuation of state
+perr = 0;
+% - attenuation rate
 gamma = 1;
 % - value of goal, collision, movement
 vGoal = 100;
@@ -63,7 +63,7 @@ for i=1:nr
 end
 
 % DO VALUE ITERATION
-T=10;
+T=100;
 for t=2:T
     % Uncomment one of these things to slow the display down.
     % pause;
@@ -234,18 +234,118 @@ for t=2:T
         end
     end
     
-    J(:,:,1)
+    J(:,:,1);
     U(:,:,1)
     
 end
             
+Ucur = U;
+% INITIAL STATE
+i = 10;
+j = 1;
+k = 5;
+
+arrow=1;
+
+while(Ucur(i,j,k) ~= 0)
     
+    U(i,j,k)
+    i
+    j
+    k
+    
+    % SETUP THE FIGURE
+    figure(1);
+    clf;
+    axis equal;
+    axis([-rdim(2) rdim(2) -rdim(2) rdim(2)]);
+    box on;
+    hold on
 
+    % DRAW HORIZONTAL AND VERTICAL GRID LINES
+    for x=-(nr-1):nr-1
+        h=line(x*[1,1],[-rdim(2),rdim(2)]);
+        set(h,'color',0.8*ones(1,3));
+    end
+    for y=-(nr-1):nr-1
+        h=line([-rdim(2),rdim(2)],y*[1,1]);
+        set(h,'color',0.8*ones(1,3));
+    end
 
+    % DRAW ROBOT (always at the center)
+    plot(0,0,'o', 'MarkerSize',10,'MarkerFaceColor','k')
+    
+    % DRAW GOAL
+    plot(rVec(i),0,'o', 'MarkerSize',10,'MarkerFaceColor','b');
+    % DRAW DIRECTION OF ROBOT
+    plot([0,arrow*cosd(thetaVec(j))],[0,arrow*sind(thetaVec(j))],'-',...
+        'LineWidth',2);
+    % DRAW DIRECTION OF GOAL
+    plot([rVec(i),rVec(i)+arrow*cosd(phiVec(k))],[0,arrow*sind(phiVec(k))],'-',...
+        'LineWidth',2);
+    pause(1)
+        
+    if(Ucur(i,j,k) == 2) 
+        i=i+1; 
+    elseif(Ucur(i,j,k) == 3)
+        i=i-1;
+    elseif(Ucur(i,j,k) == 4)
+        j=j+1;
+        if(j>ntheta)
+            j=1;
+        end
+    elseif(Ucur(i,j,k) == 5)
+        j=j-1;
+        if(j<1)
+            j=ntheta;
+        end
+    elseif(Ucur(i,j,k) == 6)
+        k=k+1;
+        if(k>phi)
+            k=1;
+        end
+    elseif(Ucur(i,j,k) == 7)
+        k=k-1;
+        if(k<1)
+            j=nphi;
+        end
+    end
+    
+    U(i,j,k)
+    i
+    j
+    k
+           
+end
 
+U(i,j,k)
+i
+j
+k
 
+% SETUP THE FIGURE
+figure(1);
+clf;
+axis equal;
+axis([-rdim(2) rdim(2) -rdim(2) rdim(2)]);
+box on;
+hold on
 
+% DRAW HORIZONTAL AND VERTICAL GRID LINES
+for x=-(nr-1):nr-1
+    h=line(x*[1,1],[-rdim(2),rdim(2)]);
+    set(h,'color',0.8*ones(1,3));
+end
+for y=-(nr-1):nr-1
+    h=line([-rdim(2),rdim(2)],y*[1,1]);
+    set(h,'color',0.8*ones(1,3));
+end
 
+% DRAW ROBOT'S PLACE (0,0)
+plot(0,0,'o', 'MarkerSize',10,'MarkerFaceColor','k')
 
-
-
+plot(rVec(i),0,'o', 'MarkerSize',10,'MarkerFaceColor','b')
+plot([0,arrow*cosd(thetaVec(j))],[0,arrow*sind(thetaVec(j))],'-',...
+    'LineWidth',2);
+plot([rVec(i),rVec(i)+arrow*cosd(phiVec(k))],[0,arrow*sind(phiVec(k))],'-',...
+    'LineWidth',2);
