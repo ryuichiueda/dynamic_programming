@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 	setInitialPolicy(isobst, isgoal, U);
 
 	// DO VALUE ITERATION
-	int T = 100;
+	int T = 10;
 	float *Jprev;
 	char *Uprev;
 	Jprev = (float *)calloc(nr*ntheta*nphi, sizeof(float));
@@ -240,10 +240,6 @@ void valueIteration(float *isobst, float *isgoal, float *J, char *U, float *Jpre
 
 					// Compute the total expected cost for each of the possible actions.
 					computeTotalCost(tempCost, totalCost);
-					for(int n=0; n<numActions; n++)
-					{
-						printf("n=%d totalCost=%f\n", n,totalCost[n]);
-					}
 
 					// Compute the new exptected cost-to-go, by taking the maximum over
 					// possible actions.
@@ -334,7 +330,7 @@ float computeNewValue(float *totalCost)
 
 	for(int n=0; n<numActions; n++)
 	{
-		if(max>totalCost[n])
+		if(totalCost[n]>max)
 			max=totalCost[n];
 	}
 
@@ -349,7 +345,7 @@ char computeNewPolicy(float *totalCost)
 
 	for(int n=0; n<numActions; n++)
 	{
-		if(max>totalCost[n])
+		if(totalCost[n]>max)
 		{
 			max=totalCost[n];
 			idx=n;
