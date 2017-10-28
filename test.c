@@ -4,6 +4,7 @@
 #include <time.h>
 #include <string.h>
 
+// FUNCTIONS FOR SETUP
 int numberCells(float, float *);
 void setVector(int, float, float *, float *);
 void setObst(float *);
@@ -11,6 +12,7 @@ void setGoal(float *, float *, float *);
 void setInitialValue(float *, float *, float *, int, int, int);
 void setInitialPolicy(float *, float *, char *);
 
+// FUNCTIONS FOR VALUE ITERATION
 void valueIteration(float *, float *, float *, char *, float *);
 void conditionR(int, int, int, float *, float *);
 void conditionTheta(int, int, int, float *, float *);
@@ -80,34 +82,39 @@ int main(int argc, char **argv)
 	setInitialPolicy(isobst, isgoal, U);
 
 	// DO VALUE ITERATION
-	int T = 10;
+	int T = 100;
 	float *Jprev;
 	char *Uprev;
 	Jprev = (float *)calloc(nr*ntheta*nphi, sizeof(float));
 	Uprev = (char *)calloc(nr*ntheta*nphi, sizeof(char));
 
-	memcpy(Jprev, J, sizeof(float)*nr*ntheta*nphi);
-	memcpy(Uprev, U, sizeof(char)*nr*ntheta*nphi);
-
 	for(int t=0; t<T; t++)
 	{
+		printf("Iteration %d\n", t+1);
+
 		// Iterate over all states.
 		memcpy(Jprev, J, sizeof(float)*nr*ntheta*nphi);
 		memcpy(Uprev, U, sizeof(char)*nr*ntheta*nphi);
 
 		valueIteration(isobst, isgoal, J, U, Jprev);
+
 		for(int x=0; x<nr*ntheta*nphi; x++)
 		{
-			printf("%d J=%f U=%d\n", x, J[x], U[x]);
+			printf("%2d J=%3.1f U=%2d\n", x, J[x], U[x]);
 		}
 		printf("\n");
-
 	}
 
-	
-
-	
-	
+	// free used memory
+	free(rVec);
+	free(thetaVec);
+	free(phiVec);
+	free(isobst);
+	free(isgoal);
+	free(J);
+	free(U);
+	free(Jprev);
+	free(Uprev);
 	
 	return(0);
 }
