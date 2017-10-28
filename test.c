@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 	return(0);
 }
 
-/*--------------- FUNCTIONS ----------------*/
+/*--------------- SETUP FUNCTIONS ----------------*/
 
 int numberCells(float d, float *dim)
 {
@@ -226,6 +226,8 @@ void setInitialPolicy(float *isobst, float *isgoal, char *U)
 		}
 	}
 }
+
+/*--------------- VALUE ITERATION FUNCTIONS ----------------*/
 
 void valueIteration(float *isobst, float *isgoal, float *J, char *U, float *Jprev)
 {
