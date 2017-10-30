@@ -9,8 +9,10 @@ int numberCells(double, double *);
 void setVector(int, double, double *, double *);
 void setObst(double *);
 void setGoal(double *, double *, double *);
-void setInitialValue(double *, double *, double *, int, int, int);
+void setInitialValue(double *, double *, double *);
+void conditionValue(double *, double *, double *, int, int, int);
 void setInitialPolicy(double *, double *, char *);
+void conditionPolicy(double *, double *, char *, int, int, int);
 
 // FUNCTIONS FOR VALUE ITERATION
 void valueIteration(double *, double *, double *, char *, double *);
@@ -75,7 +77,7 @@ int main(int argc, char **argv)
 	char *U;
 	J = (double *)calloc(nr*ntheta*nphi, sizeof(double));
 	U = (char *)calloc(nr*ntheta*nphi, sizeof(char));
-	setInitialValue(isobst, isgoal, J, vObst, vGoal, vInitial);
+	setInitialValue(isobst, isgoal, J);
 	setInitialPolicy(isobst, isgoal, U);
 
 	// DO VALUE ITERATION
@@ -164,22 +166,27 @@ void setGoal(double *thetaVec, double *phiVec, double *isgoal)
 	}
 }
 
-void setInitialValue(double *isobst, double *isgoal, double *J, int vObst, int vGoal, int vInitial)
+void setInitialValue(double *isobst, double *isgoal, double *J)
 {
 	for(int i=0; i<nr; i++){
 		for(int j=0; j<ntheta; j++){
 			for(int k=0; k<nphi; k++){
-				if(isobst[nr*ntheta*k+ntheta*i+j]){
-					J[nr*ntheta*k+ntheta*i+j] = vObst;
-				}
-				else if(isgoal[nr*ntheta*k+ntheta*i+j]){
-					J[nr*ntheta*k+ntheta*i+j] = vGoal;
-				}
-				else{
-					J[nr*ntheta*k+ntheta*i+j] = vInitial;
-				}
+				conditionValue(isobst, isgoal, J, i, j, k);
 			}
 		}
+	}
+}
+
+void conditionValue(double *isobst, double *isgoal, double *J, int i, int j, int k)
+{
+	if(isobst[nr*ntheta*k+ntheta*i+j]){
+		J[nr*ntheta*k+ntheta*i+j] = vObst;
+	}
+	else if(isgoal[nr*ntheta*k+ntheta*i+j]){
+		J[nr*ntheta*k+ntheta*i+j] = vGoal;
+	}
+	else{
+		J[nr*ntheta*k+ntheta*i+j] = vInitial;
 	}
 }
 
@@ -190,18 +197,23 @@ void setInitialPolicy(double *isobst, double *isgoal, char *U)
 	for(int i=0; i<nr; i++){
 		for(int j=0; j<ntheta; j++){
 			for(int k=0; k<nphi; k++){
-				if(isobst[nr*ntheta*k+ntheta*i+j]){
-					U[nr*ntheta*k+ntheta*i+j] = -1;
-				}
-				else if(isgoal[nr*ntheta*k+ntheta*i+j]){
-					U[nr*ntheta*k+ntheta*i+j] = -1;
-				}
-				else{
-					char r = rand() % 7;
-					U[nr*ntheta*k+ntheta*i+j] = r;
-				}
+				conditionPolicy(isobst, isgoal, U, i, j, k);
 			}
 		}
+	}
+}
+
+void conditionPolicy(double *isobst, double *isgoal, char *U, int i, int j, int k)
+{
+	if(isobst[nr*ntheta*k+ntheta*i+j]){
+		U[nr*ntheta*k+ntheta*i+j] = -1;
+	}
+	else if(isgoal[nr*ntheta*k+ntheta*i+j]){
+		U[nr*ntheta*k+ntheta*i+j] = -1;
+	}
+	else{
+		char r = rand() % 7;
+		U[nr*ntheta*k+ntheta*i+j] = r;
 	}
 }
 
