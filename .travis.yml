@@ -2,5 +2,4 @@ language: c
 compiler: gcc
 
 script:
-  - gcc -std=c99 test.c -o test
-  - ./test
+  - gcc -std=c99 test.c
