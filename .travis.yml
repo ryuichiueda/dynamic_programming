@@ -2,5 +2,5 @@ language: c
 compiler: gcc
 
 script:
-  - gcc test.c
-  - ./a.out
+  - gcc -std=c99 test.c -o test
+  - ./test
