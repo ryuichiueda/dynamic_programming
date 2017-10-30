@@ -298,13 +298,14 @@ void conditionPhi(int i, int j, int k, double *tempCost, double *Jprev)
 
 void computeTotalCost(double *tempCost, double *totalCost)
 {
-	totalCost[0] = vMove+gamma1*((1-perr)*tempCost[0]+(perr/6)*(tempCost[1]+tempCost[2]+tempCost[3]+tempCost[4]+tempCost[5]+tempCost[6]));
-	totalCost[1] = vMove+gamma1*((1-perr)*tempCost[1]+(perr/6)*(tempCost[0]+tempCost[2]+tempCost[3]+tempCost[4]+tempCost[5]+tempCost[6]));
-	totalCost[2] = vMove+gamma1*((1-perr)*tempCost[2]+(perr/6)*(tempCost[1]+tempCost[0]+tempCost[3]+tempCost[4]+tempCost[5]+tempCost[6]));
-	totalCost[3] = vMove+gamma1*((1-perr)*tempCost[3]+(perr/6)*(tempCost[1]+tempCost[2]+tempCost[0]+tempCost[4]+tempCost[5]+tempCost[6]));
-	totalCost[4] = vMove+gamma1*((1-perr)*tempCost[4]+(perr/6)*(tempCost[1]+tempCost[2]+tempCost[3]+tempCost[0]+tempCost[5]+tempCost[6]));
-	totalCost[5] = vMove+gamma1*((1-perr)*tempCost[5]+(perr/6)*(tempCost[1]+tempCost[2]+tempCost[3]+tempCost[4]+tempCost[0]+tempCost[6]));
-	totalCost[6] = vMove+gamma1*((1-perr)*tempCost[6]+(perr/6)*(tempCost[1]+tempCost[2]+tempCost[3]+tempCost[4]+tempCost[5]+tempCost[0]));
+	double tempCostTotal=0;
+	
+	for(int n; n<numActions; n++){
+		tempCostTotal+=tempCost[n];
+	}
+	for(int n; n<numActions; n++){
+		totalCost[n]=vMove+gamma1*((1-perr)*tempCost[n]+(perr/6)*(tempCostTotal-tempCost[n]));
+	}
 }
 
 double computeNewValue(double *totalCost)
