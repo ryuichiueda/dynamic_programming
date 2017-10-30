@@ -2,4 +2,4 @@ language: c
 compiler: gcc
 
 script:
-  - gcc -std=c99 --no-as-needed -lm test.c
+  - gcc -std=c99 -lm test.c
