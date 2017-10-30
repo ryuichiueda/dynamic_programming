@@ -2,4 +2,4 @@ language: c
 compiler: gcc
 
 script:
-  - gcc -lm -std=c99 test.c
+  - gcc -std=c99 -lm test.c
