@@ -1,3 +1,6 @@
+/*********************************************************
+*********************************************************/
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -31,8 +34,7 @@ double vGoal, vObst, vMove;
 double vInitial;
 int numActions = 7;
 
-int main(int argc, char **argv) 
-{
+int main(int argc, char **argv) {
 	// DEFINE PARAMETERS
 	double dr, dtheta, dphi;
 	double rdim[2], thetadim[2], phidim[2];
@@ -87,8 +89,7 @@ int main(int argc, char **argv)
 	Jprev = (double *)calloc(nr*ntheta*nphi, sizeof(double));
 	Uprev = (char *)calloc(nr*ntheta*nphi, sizeof(char));
 
-	for(int t=0; t<T; t++)
-	{
+	for(int t=0; t<T; t++){
 		printf("Iteration %d\n", t+1);
 
 		// Iterate over all states.
@@ -97,8 +98,7 @@ int main(int argc, char **argv)
 
 		valueIteration(isobst, isgoal, J, U, Jprev);
 
-		for(int x=0; x<nr*ntheta*nphi; x++)
-		{
+		for(int x=0; x<nr*ntheta*nphi; x++){
 			printf("%2d J=%3.1f U=%2d\n", x, J[x], U[x]);
 		}
 		printf("\n");
@@ -120,8 +120,7 @@ int main(int argc, char **argv)
 
 /*--------------- SETUP FUNCTIONS ----------------*/
 
-int numberCells(double d, double *dim)
-{
+int numberCells(double d, double *dim){
 	int n = 0;
 	double diff;
 	diff = dim[1]-dim[0];
@@ -136,8 +135,7 @@ int numberCells(double d, double *dim)
 	return n;
 }
 
-void setVector(int n, double d, double *dim, double *Vec)
-{
+void setVector(int n, double d, double *dim, double *Vec){
 	double value;
 	value = dim[0];
 
@@ -147,8 +145,7 @@ void setVector(int n, double d, double *dim, double *Vec)
 	}
 }
 
-void setObst(double *isobst)
-{
+void setObst(double *isobst){
 	for(int j=0; j<ntheta; j++){
 		for(int k=0;k<nphi; k++){
 			isobst[nr*ntheta*k+(nr-1)*ntheta+j] = 1;
@@ -156,8 +153,7 @@ void setObst(double *isobst)
 	}
 }
 
-void setGoal(double *thetaVec, double *phiVec, double *isgoal)
-{
+void setGoal(double *thetaVec, double *phiVec, double *isgoal){
 	for(int j=0; j<ntheta; j++){
 		for(int k=0; k<nphi; k++){
 			if(thetaVec[j]==phiVec[k])
@@ -166,8 +162,7 @@ void setGoal(double *thetaVec, double *phiVec, double *isgoal)
 	}
 }
 
-void setInitialValue(double *isobst, double *isgoal, double *J)
-{
+void setInitialValue(double *isobst, double *isgoal, double *J){
 	for(int i=0; i<nr; i++){
 		for(int j=0; j<ntheta; j++){
 			for(int k=0; k<nphi; k++){
@@ -177,8 +172,7 @@ void setInitialValue(double *isobst, double *isgoal, double *J)
 	}
 }
 
-void conditionValue(double *isobst, double *isgoal, double *J, int i, int j, int k)
-{
+void conditionValue(double *isobst, double *isgoal, double *J, int i, int j, int k){
 	if(isobst[nr*ntheta*k+ntheta*i+j]){
 		J[nr*ntheta*k+ntheta*i+j] = vObst;
 	}
@@ -190,8 +184,7 @@ void conditionValue(double *isobst, double *isgoal, double *J, int i, int j, int
 	}
 }
 
-void setInitialPolicy(double *isobst, double *isgoal, char *U)
-{
+void setInitialPolicy(double *isobst, double *isgoal, char *U){
 	srand((unsigned)time(NULL));
 
 	for(int i=0; i<nr; i++){
@@ -203,8 +196,7 @@ void setInitialPolicy(double *isobst, double *isgoal, char *U)
 	}
 }
 
-void conditionPolicy(double *isobst, double *isgoal, char *U, int i, int j, int k)
-{
+void conditionPolicy(double *isobst, double *isgoal, char *U, int i, int j, int k){
 	if(isobst[nr*ntheta*k+ntheta*i+j]){
 		U[nr*ntheta*k+ntheta*i+j] = -1;
 	}
@@ -219,8 +211,7 @@ void conditionPolicy(double *isobst, double *isgoal, char *U, int i, int j, int 
 
 /*--------------- VALUE ITERATION FUNCTIONS ----------------*/
 
-void valueIteration(double *isobst, double *isgoal, double *J, char *U, double *Jprev)
-{
+void valueIteration(double *isobst, double *isgoal, double *J, char *U, double *Jprev){
 	double *tempCost, *totalCost;
 	tempCost = (double *)calloc(numActions, sizeof(double));
 	totalCost = (double *)calloc(numActions, sizeof(double));
@@ -250,8 +241,7 @@ void valueIteration(double *isobst, double *isgoal, double *J, char *U, double *
 	free(totalCost);
 }
 
-void conditionR(int i, int j, int k, double *tempCost, double *Jprev)
-{
+void conditionR(int i, int j, int k, double *tempCost, double *Jprev){
 	if(i==0){
 		tempCost[1] = Jprev[nr*ntheta*k+ntheta*(i+1)+j];
 		tempCost[2] = Jprev[nr*ntheta*k+ntheta*i+j];
@@ -263,8 +253,7 @@ void conditionR(int i, int j, int k, double *tempCost, double *Jprev)
 	conditionTheta(i, j, k, tempCost, Jprev);
 }
 
-void conditionTheta(int i, int j, int k, double *tempCost, double *Jprev)
-{
+void conditionTheta(int i, int j, int k, double *tempCost, double *Jprev){
 	if(j==0){
 		tempCost[3] = Jprev[nr*ntheta*k+ntheta*i+(j+1)];
 		tempCost[4] = Jprev[nr*ntheta*k+ntheta*i+(ntheta-1)];
@@ -280,8 +269,7 @@ void conditionTheta(int i, int j, int k, double *tempCost, double *Jprev)
 	conditionPhi(i, j, k, tempCost, Jprev);
 }
 
-void conditionPhi(int i, int j, int k, double *tempCost, double *Jprev)
-{
+void conditionPhi(int i, int j, int k, double *tempCost, double *Jprev){
 	if(k==0){
 		tempCost[5] = Jprev[nr*ntheta*(k+1)+ntheta*i+j];
 		tempCost[6] = Jprev[nr*ntheta*(nphi-1)+ntheta*i+j];
@@ -296,8 +284,7 @@ void conditionPhi(int i, int j, int k, double *tempCost, double *Jprev)
 	}
 }
 
-void computeTotalCost(double *tempCost, double *totalCost)
-{
+void computeTotalCost(double *tempCost, double *totalCost){
 	double tempCostTotal=0;
 	
 	for(int n; n<numActions; n++){
@@ -308,8 +295,7 @@ void computeTotalCost(double *tempCost, double *totalCost)
 	}
 }
 
-double computeNewValue(double *totalCost)
-{
+double computeNewValue(double *totalCost){
 	double max;
 	max = totalCost[0];
 
@@ -321,8 +307,7 @@ double computeNewValue(double *totalCost)
 	return max;
 }
 
-char computeNewPolicy(double *totalCost)
-{
+char computeNewPolicy(double *totalCost){
 	double max;
 	char idx;
 	max = totalCost[0];
