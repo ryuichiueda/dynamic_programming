@@ -34,7 +34,7 @@ double vGoal, vObst, vMove;
 double vInitial;
 int numActions = 7;
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv){
 	// DEFINE PARAMETERS
 	double dr, dtheta, dphi;
 	double rdim[2], thetadim[2], phidim[2];
