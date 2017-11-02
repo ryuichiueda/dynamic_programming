@@ -2,6 +2,7 @@ language: c
 compiler: gcc
 
 script:
-  - gcc -std=c99 test.c -o test -lm
+  - make
   - ulimit -c unlimited
-  - ./test 
+  - ./test > output
+  - diff output ans 
