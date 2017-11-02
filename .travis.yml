@@ -2,6 +2,6 @@ language: c
 compiler: gcc
 
 script:
-  - ulimit -c unlimited
   - gcc -std=c99 test.c -o test -lm
+  - ulimit -c unlimited
   - ./test 
